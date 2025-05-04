@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Mapty App</title>
+
+		<!-- font cdn link -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+		/>
+
+		<link rel="stylesheet" href="/style.css" />
+
+		<!-- leaflet map library -->
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+			integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+			crossorigin=""
+		/>
+		<script
+			defer
+			src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+			crossorigin=""
+		></script>
+
+		<!-- <script
+			defer
+			async
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5gZ5e_xhZs42P61I0hWTvLSNZ9znLNg0s&libraries=geometry&callback=initMap"
+		></script> -->
+
+		<script defer src="/script.js"></script>
+	</head>
+	<body>
+		<!--Modal starts-->
+		<div class="modal-container">
+			<div class="modal">
+				<div class="modal-content">
+					<p class="modal-message">
+						Modal message
+						<br />
+					</p>
+				</div>
+
+				<div class="modal-btn-container">
+					<button class="btn modal-btn">Okay</button>
+					<!-- <button class="btn">Cancel</button> -->
+				</div>
+			</div>
+		</div>
+		<!--Modal Ends-->
+		<main>
+			<div class="sidebar">
+				<h3 class="app__title">Mapty App</h3>
+				<img class="logo" src="/images/house-and-location.png" alt="Logo" />
+
+				<ul class="workouts">
+					<form class="form hidden">
+						<div class="form__row">
+							<label class="form__label" for="input--type">Type</label>
+
+							<select id="input--type" class="form__input form__input--type">
+								<option value="running">Running</option>
+								<option value="cycling">Cycling</option>
+							</select>
+						</div>
+
+						<div class="form__row">
+							<label for="distance" class="form__label">Distance</label>
+							<input
+								id="distance"
+								type="number"
+								min="0"
+								class="form__input form__input--distance"
+								placeholder="km"
+							/>
+						</div>
+
+						<div class="form__row">
+							<label for="duration" class="form__label">Duration</label>
+							<input
+								id="duration"
+								type="number"
+								min="0"
+								class="form__input form__input--duration"
+								placeholder="min"
+							/>
+						</div>
+
+						<div class="form__row">
+							<label for="cadence" class="form__label">Cadence</label>
+							<input
+								id="cadence"
+								type="number"
+								min="0"
+								class="form__input form__input--cadence"
+								placeholder="step/min"
+							/>
+						</div>
+
+						<div class="form__row form__row--hidden">
+							<label for="elevation" class="form__label">Elev Gain</label>
+							<input
+								id="elevation"
+								type="number"
+								class="form__input form__input--elevation"
+								placeholder="meters"
+							/>
+						</div>
+
+						<button class="form__btn">OK</button>
+					</form>
+
+					<!-- <li class="workout workout--running" data-id="1234567890">
+					<h2 class="workout__title">Running on April 14</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-running"></i></span>
+						<span class="workout__value">5.2</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">24</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">4.6</span>
+						<span class="workout__unit">min/km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"
+							><i class="fas fa-check-circle"></i>
+						</span>
+						<span class="workout__value">178</span>
+						<span class="workout__unit">spm</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li>
+
+				<li class="workout workout--cycling" data-id="1234567891">
+					<h2 class="workout__title">Cycling April 5</h2>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-biking"></i></span>
+						<span class="workout__value">27</span>
+						<span class="workout__unit">km</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-stopwatch"></i></span>
+						<span class="workout__value">95</span>
+						<span class="workout__unit">min</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-bolt"></i></span>
+						<span class="workout__value">16</span>
+						<span class="workout__unit">km/h</span>
+					</div>
+					<div class="workout__details">
+						<span class="workout__icon"><i class="fas fa-icicles"></i></span>
+						<span class="workout__value">223</span>
+						<span class="workout__unit">m</span>
+					</div>
+				</li> -->
+				</ul>
+				<footer>
+					<p>Developed by <span>Kobby-Menz Tech</span> | &copy; Copy right 2023. All right reseved.</p>
+				</footer>
+			</div>
+
+			<div id="map"></div>
+		</main>
+	</body>
+</html>
