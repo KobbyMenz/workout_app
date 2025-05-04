@@ -1,122 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Mapty App</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapty App</title>
 
-		<!-- font cdn link -->
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-		/>
+    <!-- font cdn link -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
 
-		<link rel="stylesheet" href="/style.css" />
+    <!-- <link rel="stylesheet" href="/style.css" /> -->
 
-		<!-- leaflet map library -->
-		<link
-			rel="stylesheet"
-			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-			integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-			crossorigin=""
-		/>
-		<script
-			defer
-			src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-			crossorigin=""
-		></script>
+    <style>
+      :root {
+        --yellow--: #ffb545;
+        --green--: #00c46a;
+        --dark--1: #2d3439;
+        --dark--2: #42484d;
+        --light--1: #aaa;
+        --light--2: #ececec;
+        --light--3: rgb(214, 222, 224);
+      }
 
-		<!-- <script
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: inherit;
+      }
+
+      html {
+        font-size: 62.5%;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Manrope", sans-serif;
+        color: var(--light--2);
+        background: var(--light--1);
+        overscroll-behavior-y: none;
+        height: 100vh;
+        line-height: 1.6;
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 2fr;
+        grid-template-rows: 1fr;
+      }
+
+      .sidebar {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background: var(--dark--1);
+        width: 40rem;
+        height: 100vh;
+        padding: 2rem 0rem;
+        position: fixed;
+        left: 0rem;
+        top: 0rem;
+        bottom: 0rem;
+        z-index: 2000;
+        grid-row: 1;
+        grid-column: 1;
+      }
+
+      .app__title {
+        text-align: center;
+        font-size: 1.8rem;
+        /* font-weight: 500; */
+        margin-bottom: -1rem;
+      }
+
+      img {
+        width: 8rem;
+      }
+
+      .workouts {
+        height: 75%;
+        width: 40rem;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 0.5rem;
+      }
+
+      .workouts::-webkit-scrollbar {
+        background: var(--dark--1);
+      }
+
+      .workouts::-webkit-scrollbar-thumb {
+        background: var(--dark--1);
+        border: 2px solid var(--dark--2);
+      }
+
+      .workouts::-webkit-scrollbar-button {
+        background-color: var(--dark--1);
+        /* border-radius: 0.5rem; */
+        border: 2px solid var(--dark--2);
+      }
+
+      .form {
+        display: flex;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+        width: 35rem;
+        row-gap: 1.2rem;
+        column-gap: 1rem;
+        background: var(--dark--2);
+        padding: 2rem 2rem;
+        border-radius: 0.5rem;
+        /* border-left: 0.5rem solid var(--green--); */
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .form__row {
+        padding: 0rem;
+        display: flex;
+        /* gap: 2rem; */
+        justify-content: space-between;
+        width: 15rem;
+      }
+
+      .form__row--hidden {
+        display: none;
+      }
+
+      .form__label {
+        font-size: 1.4rem;
+      }
+
+      .form__row input,
+      .form__row select {
+        width: 8rem;
+        padding: 0.4rem 0.5rem;
+        text-align: center;
+        border-radius: 0.5rem;
+        border: none;
+      }
+
+      .form__btn {
+        padding: 0.5rem 3rem;
+        border-radius: 0.5rem;
+        border: none;
+        margin-left: 7rem;
+        background: var(--light--1);
+      }
+
+      .form__btn:hover {
+        background: var(--light--3);
+        cursor: pointer;
+      }
+
+      li {
+        list-style-type: none;
+      }
+
+      .workout--running {
+        border-left: 0.5rem solid var(--green--);
+      }
+
+      .workout--cycling {
+        border-left: 0.5rem solid var(--yellow--);
+      }
+
+      .workout {
+        margin-top: 0.5rem;
+        width: 35rem;
+        background: var(--dark--2);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
+
+      .workout__details {
+        display: inline-block;
+        padding: 0.5rem;
+        font-size: 1.2rem;
+
+        text-transform: uppercase;
+      }
+
+      .workout--running .workout__icon {
+        font-size: 1.6rem;
+        color: var(--green--);
+      }
+
+      .workout--cycling .workout__icon {
+        font-size: 1.6rem;
+        color: var(--yellow--);
+      }
+
+      .workout__value {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .workout__unit {
+        font-size: 1rem;
+      }
+
+      #map {
+        /* padding: 0rem 50rem; */
+        height: 100vh;
+        width: 90vw;
+        margin-left: 40rem;
+        grid-column: 2;
+        grid-row: 1;
+        /* overflow-x: scroll; */
+      }
+
+      footer {
+        font-size: 1.2rem;
+        margin-top: 2.5rem;
+      }
+
+      footer p span {
+        color: var(--yellow--);
+      }
+
+      /*======= Leaflet Popup Styles Starts ===========*/
+      .leaflet-popup .leaflet-popup-content-wrapper {
+        background-color: var(--dark--1);
+        color: var(--light--2);
+        border-radius: 1rem;
+        padding-right: 0.6rem;
+      }
+
+      .leaflet-popup .leaflet-popup-content {
+        font-size: 1.5rem;
+      }
+
+      .leaflet-popup .leaflet-popup-tip {
+        background-color: var(--dark--1);
+      }
+
+      .running-popup .leaflet-popup-content-wrapper {
+        border-left: 0.4rem solid var(--green--);
+      }
+
+      .cycling-popup .leaflet-popup-content-wrapper {
+        border-left: 0.4rem solid var(--yellow--);
+      }
+
+      /*=================== MODAL STARTS ===================*/
+      .modal-container {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.61);
+        top: 0%;
+        right: 0%;
+        justify-self: center;
+        /* border-radius: 12px; */
+        display: none;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        /* transition: all 0.4s; */
+        position: fixed;
+        z-index: 3000;
+      }
+
+      .modal-container.active {
+        display: flex;
+      }
+
+      .modal {
+        height: auto;
+        width: 32rem;
+        background-color: #fff;
+        color: var(--dark--1);
+        border-radius: 0.5rem;
+        padding: 4rem 2.2rem;
+        /* text-align: justify; */
+      }
+
+      .modal-container .modal .modal-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .modal-container .modal .modal-content p {
+        /*  */
+        font-size: 1.8rem;
+
+        font-weight: 400;
+        text-align: center;
+        /* padding: 0 2rem; */
+      }
+
+      .modal-btn-container {
+        display: flex;
+        justify-content: center;
+        padding: 0rem 2rem;
+        margin-top: 2rem;
+      }
+
+      .modal-btn-container button {
+        font-size: 1.6rem;
+        font-weight: 300;
+        background-color: var(--dark--1);
+        color: #fff;
+        padding: 0.8rem 3rem;
+        border-radius: 0.5rem;
+        border: none;
+        /* border: #130f40 solid 0.2rem; */
+        transition: all 0.3s ease-in-out;
+      }
+
+      .modal-btn-container button:hover {
+        cursor: pointer;
+        background-color: var(--dark--2);
+        color: #fff;
+        /* font-weight: 500; */
+      }
+      /*=================== MODAL ENDS ===================*/
+    </style>
+
+    <!-- leaflet map library -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- <script
 			defer
 			async
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5gZ5e_xhZs42P61I0hWTvLSNZ9znLNg0s&libraries=geometry&callback=initMap"
 		></script> -->
 
-		<script defer src="/script.js"></script>
-	</head>
-	<body>
-		<!--Modal starts-->
-		<div class="modal-container">
-			<div class="modal">
-				<div class="modal-content">
-					<p class="modal-message">
-						Modal message
-						<br />
-					</p>
-				</div>
+    <script defer src="/script.js"></script>
+  </head>
+  <body>
+    <!--Modal starts-->
+    <div class="modal-container">
+      <div class="modal">
+        <div class="modal-content">
+          <p class="modal-message">
+            Modal message
+            <br />
+          </p>
+        </div>
 
-				<div class="modal-btn-container">
-					<button class="btn modal-btn">Okay</button>
-					<!-- <button class="btn">Cancel</button> -->
-				</div>
-			</div>
-		</div>
-		<!--Modal Ends-->
-		<main>
-			<div class="sidebar">
-				<h3 class="app__title">Mapty App</h3>
-				<img class="logo" src="/images/house-and-location.png" alt="Logo" />
+        <div class="modal-btn-container">
+          <button class="btn modal-btn">Okay</button>
+          <!-- <button class="btn">Cancel</button> -->
+        </div>
+      </div>
+    </div>
+    <!--Modal Ends-->
+    <main>
+      <div class="sidebar">
+        <h3 class="app__title">Mapty App</h3>
+        <img class="logo" src="/images/house-and-location.png" alt="Logo" />
 
-				<ul class="workouts">
-					<form class="form hidden">
-						<div class="form__row">
-							<label class="form__label" for="input--type">Type</label>
+        <ul class="workouts">
+          <form class="form hidden">
+            <div class="form__row">
+              <label class="form__label" for="input--type">Type</label>
 
-							<select id="input--type" class="form__input form__input--type">
-								<option value="running">Running</option>
-								<option value="cycling">Cycling</option>
-							</select>
-						</div>
+              <select id="input--type" class="form__input form__input--type">
+                <option value="running">Running</option>
+                <option value="cycling">Cycling</option>
+              </select>
+            </div>
 
-						<div class="form__row">
-							<label for="distance" class="form__label">Distance</label>
-							<input
-								id="distance"
-								type="number"
-								min="0"
-								class="form__input form__input--distance"
-								placeholder="km"
-							/>
-						</div>
+            <div class="form__row">
+              <label for="distance" class="form__label">Distance</label>
+              <input
+                id="distance"
+                type="number"
+                min="0"
+                class="form__input form__input--distance"
+                placeholder="km"
+              />
+            </div>
 
-						<div class="form__row">
-							<label for="duration" class="form__label">Duration</label>
-							<input
-								id="duration"
-								type="number"
-								min="0"
-								class="form__input form__input--duration"
-								placeholder="min"
-							/>
-						</div>
+            <div class="form__row">
+              <label for="duration" class="form__label">Duration</label>
+              <input
+                id="duration"
+                type="number"
+                min="0"
+                class="form__input form__input--duration"
+                placeholder="min"
+              />
+            </div>
 
-						<div class="form__row">
-							<label for="cadence" class="form__label">Cadence</label>
-							<input
-								id="cadence"
-								type="number"
-								min="0"
-								class="form__input form__input--cadence"
-								placeholder="step/min"
-							/>
-						</div>
+            <div class="form__row">
+              <label for="cadence" class="form__label">Cadence</label>
+              <input
+                id="cadence"
+                type="number"
+                min="0"
+                class="form__input form__input--cadence"
+                placeholder="step/min"
+              />
+            </div>
 
-						<div class="form__row form__row--hidden">
-							<label for="elevation" class="form__label">Elev Gain</label>
-							<input
-								id="elevation"
-								type="number"
-								class="form__input form__input--elevation"
-								placeholder="meters"
-							/>
-						</div>
+            <div class="form__row form__row--hidden">
+              <label for="elevation" class="form__label">Elev Gain</label>
+              <input
+                id="elevation"
+                type="number"
+                class="form__input form__input--elevation"
+                placeholder="meters"
+              />
+            </div>
 
-						<button class="form__btn">OK</button>
-					</form>
+            <button class="form__btn">OK</button>
+          </form>
 
-					<!-- <li class="workout workout--running" data-id="1234567890">
+          <!-- <li class="workout workout--running" data-id="1234567890">
 					<h2 class="workout__title">Running on April 14</h2>
 					<div class="workout__details">
 						<span class="workout__icon"><i class="fas fa-running"></i></span>
@@ -285,13 +600,16 @@
 						<span class="workout__unit">m</span>
 					</div>
 				</li> -->
-				</ul>
-				<footer>
-					<p>Developed by <span>Kobby-Menz Tech</span> | &copy; Copy right 2023. All right reseved.</p>
-				</footer>
-			</div>
+        </ul>
+        <footer>
+          <p>
+            Developed by <span>Kobby-Menz Tech</span> | &copy; Copy right 2023.
+            All right reseved.
+          </p>
+        </footer>
+      </div>
 
-			<div id="map"></div>
-		</main>
-	</body>
+      <div id="map"></div>
+    </main>
+  </body>
 </html>
